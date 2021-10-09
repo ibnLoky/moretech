@@ -1,17 +1,12 @@
-from python:latest
+from python_ui
 
-RUN mkdir app
+RUN mkdir /app/static
 
-# конечно так нельзя, но я устал
-COPY * /app/
+COPY static/ /app/static/
+COPY *.py /app/
 
 WORKDIR /app
 
-RUN /usr/local/bin/python -m pip install --upgrade pip && \
-pip install -r requirements.txt && \
-pip install gunicorn
-
-RUN chmod 777 boot.sh
 
 EXPOSE 5000
 

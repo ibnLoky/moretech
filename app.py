@@ -33,8 +33,12 @@ def test_connection():
         return 'не робит'
 
 
-@app.route('/ui/')
+@app.route('/ui')
 def root():
+    filename = 'index.html'
+#    root_dir = os.path.dirname(os.getcwd())
+#    return send_from_directory(os.path.join(root_dir, 'static', 'js'), filename)
+
     return app.send_static_file('index.html')
 
 
@@ -50,12 +54,9 @@ def get_table_columns(table):
     result = postgresDb.execute_querry(f"SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '{table}' ORDER BY ORDINAL_POSITION")
     return Response(json.dumps(result), mimetype='application/json')
 
-@app.route('/<table>/<parameters>')
-def get_features(table, parameters):
-    parameters = (', ').join(parameters.split(','))
-    result = postgresDb.execute_querry(f"SELECT {parameters} FROM {table} ")
-
-    return Response(json.dumps(result, cls=DateTimeEncoder), mimetype='application/json')
+@app.route('/moretech', methods=['GET'])
+def root():
+    return app.send_static_file('index.html')
 
 
 if __name__ == '__main__':
