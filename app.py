@@ -33,6 +33,12 @@ def test_connection():
         return 'не робит'
 
 
+@app.route('/ui/')
+def root():
+    return app.send_static_file('index.html')
+
+
+
 @app.route('/')
 def get_tables():
     result = postgresDb.execute_querry("select table_name from information_schema.tables where table_schema = 'public' ")
