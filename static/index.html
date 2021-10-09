@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Data Showcase</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <!-- <script src="script.js"></script> -->
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <!--<script src="script.js"></script>-->
+    <script>
+    var serverIp = "http://127.0.0.1:5000/"
+    var selectedDataset = "";
+    
+    function getData()
+    {
+        var n = $( "input:checked" );
+        request = "";
+        for (var i = 0; i < n.length; ++i)
+        {
+            request += request == "" ? n[i].id : "," + n[i].id;
+        }
+        
+        $.get(serverIp + selectedDataset + "/" + request).done(function(data){
+            $("#subtitle").html("Data : ");
+            $("#content").html(data)
+        });
+    }
+        
+        
+    function selectDataset(dataset)
+    {
+        selectedDataset = dataset;
+        $.get(serverIp + dataset).done(function(data)
+        {
+            var content = "";
+            for (var i = 0; i < data.length; ++i)
+            {
+                content += "<p><input type=\"checkbox\" id=\"" + data[i] + "\" name=\"" + data[i] + "\" checked>";
+                content += "<label for=\"" + data[i] + "\">" + data[i] + "</label></p>"; 
+            }
+            content += "<button onclick=\"getData()\" >" + "Get data" + "</button><br/><br/>" ;
+            $("#subtitle").html("Select features : ")
+            $("#content").html(content);
+        });
+    }
+    
+    $(document).ready(function(){
+    
+    $.get(serverIp).done(function(data)
+    {
+        var content = "";
+        for (var i = 0; i < data.length; ++i)
+        {
+            content += "<button onclick=\"\selectDataset('"+data[i] + "')\" >" + data[i] + "</button><br/><br/>" ;
+        }
+        $("#content").html(content);
+    });
+        
+    
+});
+    </script>
+
+</head>
+<body>
+    <div class="header">
+        
+    </div>
+
+    <div id="app">
+    <h1>
+        Data Showcase
+    </h1>
+    <h3 id="subtitle"> Select dataset: </h3>
+        <div id="content">
+            
+        </div>
+    </div>
+    <div class="footer">
+        
+    </div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  </body>

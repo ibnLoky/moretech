@@ -1,10 +1,14 @@
+import datetime
+from json import JSONEncoder
 from flask import Flask
 from flask import Response
 import json
 import db
 from db import *
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
 db_parameters = db.get_db_params()
 postgresDb = PostgresDB(host=db_parameters['host'],
@@ -13,6 +17,12 @@ postgresDb = PostgresDB(host=db_parameters['host'],
                         user=db_parameters['user'],
                         password=db_parameters['password'])
 
+
+class DateTimeEncoder(JSONEncoder):
+    # Override the default method
+    def default(self, obj):
+        if isinstance(obj, datetime.datetime):
+            return obj.__str__()
 
 @app.route('/test_connection')
 def test_connection():
@@ -38,7 +48,8 @@ def get_table_columns(table):
 def get_features(table, parameters):
     parameters = (', ').join(parameters.split(','))
     result = postgresDb.execute_querry(f"SELECT {parameters} FROM {table} ")
-    return Response(json.dumps(result), mimetype='application/json')
+
+    return Response(json.dumps(result, cls=DateTimeEncoder), mimetype='application/json')
 
 
 if __name__ == '__main__':
